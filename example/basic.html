@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="../dist/squares.js"></script>
+        <script src="js/dice.js"></script>
+    </head>
+    <body>
+        <style>
+            body {
+                margin: 0;
+                background: url(bg.jpg);
+                background-size: 100% 100%;
+                /* background: #000; */
+            }
+            #main {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+            #log {
+                position: absolute;
+                z-index: 100;
+                right: 10px;
+                top: 10px;
+                width: 200px;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: #fff;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            #dice {
+                position: absolute;
+                left: 10;
+                bottom: 10;
+                z-index: 100;
+            }
+        </style>
+        <div id="main"></div>
+        <div id="log"></div>
+        <div id="dice"></div>
+    
+        <script type="text/javascript">
+            var squares = new Squares(document.getElementById('main'), {
+                shadow: true
+            });
+
+            var route = [];
+            var height = 0;
+            var idx = 0;
+            var onpass = function () {
+                document.querySelector('#log').innerHTML += 'Just passed block ' + this.idx + '<br />';
+            }
+            for (var i = 0; i < 10; i++) {
+                route.push({
+                    x: i, z: 0, y: height += 0.2, idx: idx++, onpass: onpass
+                });
+            }
+            for (var i = 0; i < 9; i++) {
+                route.push({
+                    x: 9, z: i + 1, y: height += 0.2, idx: idx++, onpass: onpass
+                });
+            }
+            for (var i = 0; i < 6; i++) {
+                route.push({
+                    x: 9 - i, z: 9, y: height += 0.2, idx: idx++, onpass: onpass
+                });
+            }
+            for (var i = 0; i < 3; i++) {
+                route.push({
+                    x: 3, z: 9 - i, y: height += 0.2, idx: idx++, onpass: onpass
+                });
+            }
+            for (var i = 0; i < 9; i++) {
+                route.push({
+                    x: 3 + i, z: 6, y: height += 0.2, idx: idx++, onpass: onpass
+                });
+            }
+
+            dice = new Dice(document.querySelector('#dice'));
+            dice.onroll = function (num) {
+                dice.disable();
+                squares.move(num).then(function () {
+                    dice.enable();
+                });
+            }
+            dice.disable();
+
+            squares.loadLevel({
+                route: route,
+                character: './asset/baixiaodu.gltf'
+            }).then(function () {
+                dice.enable();
+            });
+            squares.start();
+        </script>
+    </body>
+    </html>
