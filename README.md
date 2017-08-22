@@ -1,5 +1,7 @@
 # SQUARES
 
+![](asset/screenshot.png)
+
 ### Build
 
 ```bash
