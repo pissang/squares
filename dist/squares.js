@@ -13882,6 +13882,12 @@ var Node = Base_1.extend(
 {
 
     /**
+     * @memberOf qtek.Node
+     * @type {qtek.math.Vector3}
+     * @instance
+     */
+    target: null,
+    /**
      * If node and its chilren invisible
      * @type {boolean}
      * @memberOf qtek.Node
@@ -14416,6 +14422,8 @@ var Node = Base_1.extend(
         return function (target, up) {
             m.lookAt(this.position, target, up || this.localTransform.y).invert();
             this.setLocalTransform(m);
+
+            this.target = target;
         };
     }()
 });
@@ -21465,7 +21473,7 @@ var mat3$2 = glmatrix.mat3;
 
 var BevelCube = StaticGeometry_1.extend(function () {
     return {
-        bevelSize: 0.2,
+        bevelSize: 0.15,
         bevelSegments: 2,
 
         size: [0.9, 0.9, 0.9]
@@ -22048,14 +22056,14 @@ var OrbitControl = Base_1.extend(function () {
          * @type {number}
          * @default 0.5
          */
-        minDistance: 2,
+        minDistance: 0.1,
 
         /**
          * Maximum distance to the center
          * @type {number}
          * @default 2
          */
-        maxDistance: 100,
+        maxDistance: 1000,
 
         /**
          * Minimum alpha rotation
@@ -22365,6 +22373,8 @@ var OrbitControl = Base_1.extend(function () {
      */
     update: function (deltaTime) {
 
+        deltaTime = deltaTime || 16;
+
         if (this._rotating) {
             var radian = (this.autoRotateDirection === 'cw' ? 1 : -1) * this.autoRotateSpeed / 180 * Math.PI;
             this._phi -= radian * deltaTime / 1000;
@@ -22663,6 +22673,9 @@ Object.defineProperty(OrbitControl.prototype, 'target', {
         return this._target;
     },
     set: function (val) {
+        if (val && val.target) {
+            this.setCenter(val.target.toArray());
+        }
         this._target = val;
         this.decomposeTransform();
     }

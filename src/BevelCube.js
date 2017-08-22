@@ -6,7 +6,7 @@ let mat3 = glMatrix.mat3;
 
 let BevelCube = StaticGeometry.extend(function () {
     return {
-        bevelSize: 0.2,
+        bevelSize: 0.15,
         bevelSegments: 2,
 
         size: [0.9, 0.9, 0.9]
